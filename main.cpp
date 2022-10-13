@@ -8,10 +8,8 @@
  *
  */
 #include "main.h"
-#include <stdio.h>
-#include <string.h>
-#include "hardware/spi.h"
 #include "./spiBridgeInteraction.cpp"
+// #include "./Peripherals.cpp"
 using namespace std;
 
 
@@ -25,23 +23,20 @@ int main() {
 
     gpio_set_dir(LED, GPIO_OUT);
 
-    SpiInterface com;
+    Peripherals periphers_state;
+
+    SpiInterface com(&periphers_state);
 
     // com.clear_write_buffer();
     // com.clear_read_buffer();    
 
     while (true) {
-        gpio_put(LED, 1);
-        sleep_ms(50);
-        com.setWriteBufferWithString("a");
-        com.clear_read_buffer();
-        com.terminateWriteBuf();
-        int bytesWritten = com.readAndWriteFromBus();
-        if(bytesWritten > 0) {
-            gpio_put(LED, 0);
-            sleep_ms(200);
-        }
-       
+        // com.setWriteBufferWithString("I am pico");
+        // com.clear_read_buffer();
+        // com.terminateWriteBuf();
+        uint baud = spi_get_baudrate(spi0);
+        int bytesWritten = com.exchangeByteMessage();
+        gpio_put(LED, periphers_state.L[0]);       
     }
 
     return 0;

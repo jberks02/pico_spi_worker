@@ -1,5 +1,5 @@
 /*
- * picoCPP for Raspberry Pi Pico
+ * spi to pi communication
  *
  * @version     1.0.0
  * @author      Justin Berkshire
@@ -30,6 +30,10 @@
 #include "hardware/spi.h"
 #include "hardware/adc.h"
 #include "hardware/uart.h"
+
+// MY HEADERS
+#include "./Peripherals.cpp"
+
 
 #ifdef __cplusplus
 extern "C"

@@ -1,19 +1,22 @@
 #include "main.h"
-#include <stdio.h>
-#include <string.h>
-#include "hardware/spi.h"
+// #include "./Peripherals.cpp"
 using namespace std;
 
 class SpiInterface {
 
     private: uint8_t write_buffer[256];
-    private: uint8_t read_buffer[256];
+    public: uint8_t read_buffer[256];
     private: int writeBufLength;
+    private: Peripherals *peripherals;
 
-    public: SpiInterface(uint tx = 19, uint sck = 18, uint csn = 17, uint rx = 16, uint baudrate = 5000, uint CPOL = 0, uint CPHA = 0) {
+    public: SpiInterface(Peripherals *perf, uint tx = 19, uint sck = 18, uint csn = 17, uint rx = 16, uint baudrate = 1000*100, uint CPOL = 0, uint CPHA = 0) {
         try {
+            peripherals = perf;
+            memset(write_buffer, 0, 32);
+            memset(read_buffer, 0, 32);
            //initiatialize spi worker interface
             spi_init(spi0, baudrate);
+            spi_set_slave(spi0, true);
             spi_set_format(spi0, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
             gpio_set_function(rx, GPIO_FUNC_SPI);
             gpio_set_function(sck, GPIO_FUNC_SPI);
@@ -22,8 +25,8 @@ class SpiInterface {
             // Make the SPI pins available to picotool
             bi_decl(bi_4pins_with_func(rx, tx, sck, csn, GPIO_FUNC_SPI));
 
-            clear_write_buffer();
-            clear_read_buffer(); 
+            // clear_read_buffer();
+            // clear_write_buffer();
         } catch (...) {
             printf("Failure to initialize spi bus");
         }
@@ -33,7 +36,8 @@ class SpiInterface {
         spi_set_slave(spi0, true);
     }
     public: void clear_write_buffer() {
-        for(int i = 0; i < writeBufLength;i++) {
+        write_buffer[0] = '*';
+        for(int i = 1; i < 255;i++) {
             write_buffer[i] = 0;
         };
     }
@@ -45,9 +49,7 @@ class SpiInterface {
     public: void setWriteBufferWithString(string dataToTranscode) {
         try {
 
-
-
-            copy(dataToTranscode.begin(), dataToTranscode.end(), write_buffer);
+            sprintf((char *)write_buffer, "I am Pico");
 
             writeBufLength = dataToTranscode.length();
 
@@ -86,7 +88,7 @@ class SpiInterface {
 
             if(ready == false) return 0;
 
-            int bytesWritten = spi_write_blocking(spi0, write_buffer, writeBufLength);
+            int bytesWritten = spi_write_blocking(spi0, write_buffer, 1);
             
             clear_write_buffer();
 
@@ -104,7 +106,7 @@ class SpiInterface {
 
             if(ready == false) return 0;
 
-            int bytesRead = spi_read_blocking(spi0, 0, read_buffer, 255);
+            int bytesRead = spi_read_blocking(spi0, 0, read_buffer, 32);
 
             return bytesRead;
 
@@ -118,17 +120,52 @@ class SpiInterface {
 
             bool readable = spi_is_readable(spi0);
             bool writeable = spi_is_writable(spi0);
-            bool busy = spi_is_busy(spi0);
 
-            if(writeable == false || readable == false || busy == true) return 0;
+            if(writeable == false || readable == false) return 0;
 
-            int bytesWrittenAndRead = spi_write_read_blocking(spi0, write_buffer, read_buffer, 4);
+            int bytesWrittenAndRead = spi_write_read_blocking(spi0, write_buffer, read_buffer, 32);
 
             return bytesWrittenAndRead;
             
         } catch (...) {
             printf("Failure to exchange data with host");
             return 0;
+        }
+    }
+    public: int exchangeByteMessage() {
+        try {
+
+            bool readable = spi_is_readable(spi0);
+            bool writeable = spi_is_writable(spi0);
+
+            if(writeable == false || readable == false) return 0;
+
+            int bytesExchanged = spi_write_read_blocking(spi0, write_buffer, read_buffer, 256);
+            
+            clear_write_buffer();
+
+            int previous_min = 0;
+
+            for(int i = 0; i < 256; i++) {
+                if(read_buffer[i] == ';') {
+                    uint8_t command[i - previous_min];
+                    int command_index = 0;
+                    for(int c = previous_min; c <= i; c++) {
+                        command[command_index] = read_buffer[c];
+                        command_index++;
+                        previous_min = c;
+                    }
+                    peripherals->process_command(command, previous_min + 1);
+                }
+            }
+
+            clear_read_buffer();
+
+            return 1;
+
+        } catch (...) {
+            printf("Single byte exchange failed");
+            return -1;
         }
     }
 };
