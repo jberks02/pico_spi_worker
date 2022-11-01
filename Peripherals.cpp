@@ -62,6 +62,30 @@ class Peripherals {
 
                 return 0;
 
+            } else if(command[0] == 'S' && command[1] == 'G' && command[2] == '1') {
+
+                int index = set_command_index(&lastIteration, command, commandLength, 3);
+
+                int value = set_command_value(&lastIteration, command, commandLength);
+
+                if(index > 1) return 1; // ensure bad index can't be accessed for stepper gear
+
+                stepper_one_gear[index] = value;
+
+                return 0;
+                
+            } else if(command[0] == 'S' && command[1] == 'G' && command[2] == '2') {
+
+                int index = set_command_index(&lastIteration, command, commandLength, 3);
+
+                int value = set_command_value(&lastIteration, command, commandLength);
+
+                if(index > 1) return 1; // ensure bad index can't be accessed for stepper gear
+
+                stepper_two_gear[index] = value;
+
+                return 0;
+                
             } else if(command[0] == 'H') {
                 home = true;
             } else if(command[0] == 'P' && command[1] == 'O') {
@@ -77,19 +101,26 @@ class Peripherals {
             return -1;
         }
     }
-    private: uint generate_new_response() {
+    public: string generate_new_response() {
         std::stringstream message;
-        
-        message << "L " << L[0] << ";S ";
-        for (int i = 0; i < 15; i++) {
-            message << S[i] << " ";
+        if(positionTransmit == true) {
+            message << "L " << L[0] << ";S ";
+            for (int i = 0; i < 15; i++) {
+                message << S[i] << " ";
+            }
+            message << ";" << "ST ";
+            for (int i = 0; i < 1; i++) {
+                message << ST[i] << " ";
+            }
+            message << ";";
         }
-        message << ";" << "ST ";
-        for (int i = 0; i < 1; i++) {
-            message << ST[i] << " ";
+        if(sensorTransmit == true) {
+            message << "TEM " << temperature << ";";
+            message << "T " << touch_one << " " << touch_two << " " << touch_three << ";";
+            message << "EDSP " << endstop_one << " " << endstop_two << " " << endstop_three << " " << endstop_four << ";";
         }
-        message << ";";
-        return 0;
+
+        return message.str();
     }
     private: int set_command_value(int *lastIndex, uint8_t *set, int setLength) {
         

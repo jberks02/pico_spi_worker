@@ -1,5 +1,4 @@
 #include "main.h"
-// #include "./Peripherals.cpp"
 using namespace std;
 
 class SpiInterface {
@@ -48,7 +47,15 @@ class SpiInterface {
     public: void construct_new_write() {
         try {
 
-            
+            string newMessage = peripherals->generate_new_response();
+
+            char newCommand[newMessage.length()]; 
+
+            strcpy(newCommand, newMessage.c_str());
+
+            for(int i = 0;i < newMessage.length() - 1;i++) {
+                write_buffer[i] = newCommand[i];
+            }
 
         } catch (...) {
             printf("Couldn't set up new write buffer");
