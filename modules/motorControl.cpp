@@ -29,6 +29,8 @@ class MotorControl {
         }
     }
     public: void homeMotors() {
+        if(periphers->home == false) return;
+        periphers->home = false;
         stepper_1->home_joint_to_endstop();
         stepper_2->home_joint_to_endstop();
     }
