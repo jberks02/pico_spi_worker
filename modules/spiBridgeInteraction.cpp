@@ -1,5 +1,4 @@
-#include "main.h"
-// #include "./Peripherals.cpp"
+#include "../main.h"
 using namespace std;
 
 class SpiInterface {
@@ -36,8 +35,7 @@ class SpiInterface {
         spi_set_slave(spi0, true);
     }
     public: void clear_write_buffer() {
-        write_buffer[0] = '*';
-        for(int i = 1; i < 255;i++) {
+        for(int i = 0; i < 255;i++) {
             write_buffer[i] = 0;
         };
     }
@@ -46,41 +44,24 @@ class SpiInterface {
             read_buffer[i] = 0;
         };
     }
-    public: void setWriteBufferWithString(string dataToTranscode) {
+    public: void construct_new_write() {
         try {
 
-            sprintf((char *)write_buffer, "I am Pico");
+            string newMessage = peripherals->generate_new_response();
 
-            writeBufLength = dataToTranscode.length();
+            char newCommand[newMessage.length()]; 
+
+            strcpy(newCommand, newMessage.c_str());
+
+            for(int i = 0;i < newMessage.length() - 1;i++) {
+                write_buffer[i] = newCommand[i];
+            }
 
         } catch (...) {
             printf("Couldn't set up new write buffer");
             return;
         }
     }
-    public: void terminateWriteBuf() {
-        for(int i = 0; i < 255; i++) {
-            if(write_buffer[i] == '\000') {
-                write_buffer[i] = ';';
-                write_buffer[i+1] = ' ';
-                writeBufLength++;
-                return;
-            };
-        };
-        write_buffer[255] = ';';
-    }
-    // public: void setWriteBufferWithIntSet(uint8_t *listOfValues, int listLength) {
-    //     try {
-
-    //         for (int i = 0; i < listLength; i++) {
-    //             write_buffer[i] = listOfValues[i];
-    //         };
-
-    //     } catch (...) {
-    //         printf("Could not set write buffer with uintList");
-    //         return;
-    //     }
-    // }
     public: int writeToBus() {
         try {
 
@@ -115,23 +96,6 @@ class SpiInterface {
             return 0;
         }
     }
-    public: int readAndWriteFromBus() {
-        try {
-
-            bool readable = spi_is_readable(spi0);
-            bool writeable = spi_is_writable(spi0);
-
-            if(writeable == false || readable == false) return 0;
-
-            int bytesWrittenAndRead = spi_write_read_blocking(spi0, write_buffer, read_buffer, 32);
-
-            return bytesWrittenAndRead;
-            
-        } catch (...) {
-            printf("Failure to exchange data with host");
-            return 0;
-        }
-    }
     public: int exchangeByteMessage() {
         try {
 
@@ -139,6 +103,13 @@ class SpiInterface {
             bool writeable = spi_is_writable(spi0);
 
             if(writeable == false || readable == false) return 0;
+
+            uint8_t check_read[1];
+            uint8_t check_write[1] = {1};
+
+            spi_write_read_blocking(spi0, check_write, check_read, 1);
+
+            if(check_read[0] != 1) return 0;
 
             int bytesExchanged = spi_write_read_blocking(spi0, write_buffer, read_buffer, 256);
             
@@ -155,7 +126,8 @@ class SpiInterface {
                         command_index++;
                         previous_min = c;
                     }
-                    peripherals->process_command(command, previous_min + 1);
+                    previous_min++;
+                    peripherals->process_command(command, previous_min);
                 }
             }
 
