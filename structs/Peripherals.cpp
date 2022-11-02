@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <sstream>
-#include "main.h"
+#include "../main.h"
 using namespace std;
 
 class Peripherals {
     public: uint L[1] = {0};
     public: uint S[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     public: uint ST[3] = {0,0};
+    public: int stepper_speed = 2; //milliseconds per step
     public: uint stepper_one_gear[2] = {1, 4};
     public: uint stepper_two_gear[2] = {1, 4};
     public: float temperature = 0.f;
@@ -50,6 +51,7 @@ class Peripherals {
                 S[index] = value;
 
                 return 0;
+
             } else if(command[0] == 'S' && command[1] == 'T') {
 
                 int index = set_command_index(&lastIteration, command, commandLength, 2);
@@ -95,11 +97,12 @@ class Peripherals {
                 sensorTransmit = !sensorTransmit;
                 return 0;
             } else {
-                return -1;
+                return 1;
             }
         } catch (...) {
-            return -1;
+            return 1;
         }
+        return 1;
     }
     public: string generate_new_response() {
         std::stringstream message;

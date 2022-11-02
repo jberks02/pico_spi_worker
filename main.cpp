@@ -38,10 +38,11 @@ int main() {
 
     L293D_STEPPER stepper_one(stepper_one_coil_one, stepper_one_coil_two, 
     periphers_state.stepper_one_gear, stepper_one_f_pin, stepper_one_r_pin);
-    
+
     L293D_STEPPER stepper_two(stepper_two_coil_one, stepper_two_coil_two, 
     periphers_state.stepper_two_gear, stepper_two_f_pin, stepper_two_r_pin);
-    
+
+    MotorControl motors(&stepper_one, &stepper_two, &periphers_state);
 
     PCA9685 servo_controller(0.0f, 180.0f, 64, 0, 1);
 
@@ -64,8 +65,7 @@ int main() {
         servo_controller.servoSetAngle(periphers_state.S[13], 13);
         servo_controller.servoSetAngle(periphers_state.S[14], 14);
         servo_controller.servoSetAngle(periphers_state.S[15], 15);
-        stepper_one.moveToNewAngle(periphers_state.ST[0]);
-        stepper_two.moveToNewAngle(periphers_state.ST[1]);
+        motors.checkAndActOnNewMoves();
     }
 
     return 0;

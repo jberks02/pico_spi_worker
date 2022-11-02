@@ -1,4 +1,4 @@
-#include "main.h"
+#include "../main.h"
 using namespace std;
 
 class L293D_STEPPER {
@@ -88,6 +88,33 @@ class L293D_STEPPER {
         currentAngle = newAngle;
 
         step(newDirection, steps, speed, hold);
+
+    }
+    public: NewMove calculateNewMove(float newAngle, int speed, bool hold = true) {
+        float angleDifference;
+        char newDirection;
+        int steps;
+
+        if(newAngle == currentAngle) {
+            NewMove noOp('r', 0, 2, true);
+            return noOp;
+        };
+        if (newAngle > currentAngle) {
+            newDirection = 'f';
+            angleDifference = newAngle - currentAngle;
+        }
+        else {
+            newDirection = 'r';
+            angleDifference = currentAngle - newAngle;
+        }
+
+        steps = angleDifference / stepAngleMultiplier;
+
+        currentAngle = newAngle;
+
+        NewMove nm(newDirection, steps, speed, hold);
+
+        return nm;
 
     }
     private: void setCoilDirection(char direction, uint coil[2]) {

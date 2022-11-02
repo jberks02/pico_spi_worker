@@ -32,10 +32,12 @@
 #include "hardware/uart.h"
 
 // MY HEADERS
-#include "./Peripherals.cpp"
-#include "./Stepper.cpp"
-#include "./spiBridgeInteraction.cpp"
-#include "./PCA9685.cpp"
+#include "./structs/Peripherals.cpp"
+#include "./structs/newMove.cpp"
+#include "./modules/Stepper.cpp"
+#include "./modules/spiBridgeInteraction.cpp"
+#include "./modules/PCA9685.cpp"
+#include "./modules/motorControl.cpp"
 
 #ifdef __cplusplus
 extern "C"
