@@ -66,6 +66,7 @@ int main() {
         servo_controller.servoSetAngle(periphers_state.S[14], 14);
         servo_controller.servoSetAngle(periphers_state.S[15], 15);
         motors.checkAndActOnNewMoves();
+        motors.homeMotors();
     }
 
     return 0;
