@@ -28,8 +28,9 @@
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
 #include "hardware/spi.h"
+#include "pico/multicore.h"
 #include "hardware/adc.h"
-#include "hardware/uart.h"
+// #include "hardware/uart.h"
 
 // MY HEADERS
 #include "./structs/Peripherals.cpp"
@@ -38,6 +39,8 @@
 #include "./modules/spiBridgeInteraction.cpp"
 #include "./modules/PCA9685.cpp"
 #include "./modules/motorControl.cpp"
+#include "./modules/adcPins.cpp"
+#include "./modules/extraGPIO.cpp"
 
 #ifdef __cplusplus
 extern "C"

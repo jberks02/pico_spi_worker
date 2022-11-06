@@ -8,17 +8,20 @@ class Peripherals {
     public: uint L[1] = {0};
     public: uint S[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     public: uint ST[3] = {0,0};
-    public: int stepper_speed = 2; //milliseconds per step
+    public: int stepper_speed = 2; //milliseconds between quarter step
     public: uint stepper_one_gear[2] = {1, 4};
     public: uint stepper_two_gear[2] = {1, 4};
     public: float temperature = 0.f;
     public: float touch_one = 0.f;
     public: float touch_two = 0.f;
     public: float touch_three = 0.f;
+    public: float touch_four = 0.f;
     public: int endstop_one = 0;
     public: int endstop_two = 0;
     public: int endstop_three = 0;
     public: int endstop_four = 0;
+    public: uint extraInputs[3] = { 0, 0 ,0 };
+    public: uint extraOutPuts[2] = { 0, 0 };
     public: bool positionTransmit = true;
     public: bool sensorTransmit = true;
     public: bool home = false;
@@ -88,6 +91,18 @@ class Peripherals {
 
                 return 0;
                 
+            } else if (command[0] == 'E' && command [1] == ' ') {
+                
+                int index = set_command_index(&lastIteration, command, commandLength, 1);
+
+                int value = set_command_value(&lastIteration, command, commandLength);
+
+                if(index > 1) return 1;
+
+                extraOutPuts[index] = value;
+
+                return 0;
+
             } else if(command[0] == 'H') {
                 home = true;
             } else if(command[0] == 'P' && command[1] == 'O') {
@@ -112,15 +127,19 @@ class Peripherals {
                 message << S[i] << " ";
             }
             message << ";" << "ST ";
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 2; i++) {
                 message << ST[i] << " ";
             }
             message << ";";
         }
         if(sensorTransmit == true) {
             message << "TEM " << temperature << ";";
-            message << "T " << touch_one << " " << touch_two << " " << touch_three << ";";
-            message << "EDSP " << endstop_one << " " << endstop_two << " " << endstop_three << " " << endstop_four << ";";
+            message << "T " << touch_one << " " << touch_two << " " << touch_three << " " << touch_four << ";";
+            message << "EDSP " << endstop_one << " " << endstop_two << " " << endstop_three << " " << endstop_four << ";E";
+            for(int i = 0; i < 3; i++) {
+                message << " " << extraInputs[i];
+            }
+            message << ";";
         }
 
         return message.str();
