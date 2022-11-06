@@ -1,4 +1,4 @@
-# Pico Robatics Board leveraging SPI bridge communication and Distributed Computing Model
+# Pico Robotics Board firmware leveraging SPI bridge communication and Distributed Computing Model
 
 
 
