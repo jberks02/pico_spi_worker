@@ -104,6 +104,8 @@ class SpiInterface {
 
             if(writeable == false || readable == false) return 0;
 
+            construct_new_write();
+
             uint8_t check_read[1];
             uint8_t check_write[1] = {1};
 

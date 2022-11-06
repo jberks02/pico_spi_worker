@@ -14,7 +14,7 @@ class L293D_STEPPER {
     private: int max_homing_rotations = 500;
     public: bool homed = false;
            //Nema 17 provides 1.8 degrees per step so that'll be the standard, this can be set on initialization;
-    public: L293D_STEPPER(uint firstCoil[2], uint secondCoil[2], uint gearReduction[2], uint fPin, uint rPin,float motorAnglePerStep = 1.8) {
+    public: L293D_STEPPER(uint firstCoil[2], uint secondCoil[2], uint gearReduction[2], uint fPin, uint rPin, float motorAnglePerStep = 1.8) {
         //initialize coil one pins;
         for (int i = 0;i < 2;i++) {
             gpio_init(firstCoil[i]);
