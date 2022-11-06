@@ -47,6 +47,8 @@ class SpiInterface {
     public: void construct_new_write() {
         try {
 
+            peripherals->pause_updates = true;
+
             string newMessage = peripherals->generate_new_response();
 
             char newCommand[newMessage.length()]; 
@@ -56,6 +58,8 @@ class SpiInterface {
             for(int i = 0;i < newMessage.length() - 1;i++) {
                 write_buffer[i] = newCommand[i];
             }
+
+            peripherals->pause_updates = false;
 
         } catch (...) {
             printf("Couldn't set up new write buffer");

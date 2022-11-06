@@ -25,6 +25,7 @@ class Peripherals {
     public: bool positionTransmit = true;
     public: bool sensorTransmit = true;
     public: bool home = false;
+    public: bool pause_updates = false;
     public: int process_command(uint8_t *command, int commandLength) {
         try {
 
