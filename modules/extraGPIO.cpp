@@ -20,8 +20,7 @@ class ExtraGPIO {
             outputList[i] = outputs[i];
         }
     }
-    public: uint getInputReads() {
-        uint newState[inputLength];
+    public: uint getInputReads(uint newState[3]) {
 
         for(int i = 0; i < inputLength; i++) {
             newState[i] = gpio_get(inputList[i]);

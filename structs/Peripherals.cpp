@@ -20,7 +20,8 @@ class Peripherals {
     public: int endstop_two = 0;
     public: int endstop_three = 0;
     public: int endstop_four = 0;
-    public: uint extraInputs[3];
+    public: uint extraInputs[3] = { 0, 0 ,0 };
+    public: uint extraOutPuts[2] = { 0, 0 };
     public: bool positionTransmit = true;
     public: bool sensorTransmit = true;
     public: bool home = false;
@@ -90,6 +91,18 @@ class Peripherals {
 
                 return 0;
                 
+            } else if (command[0] == 'E' && command [1] == ' ') {
+                
+                int index = set_command_index(&lastIteration, command, commandLength, 1);
+
+                int value = set_command_value(&lastIteration, command, commandLength);
+
+                if(index > 1) return 1;
+
+                extraOutPuts[index] = value;
+
+                return 0;
+
             } else if(command[0] == 'H') {
                 home = true;
             } else if(command[0] == 'P' && command[1] == 'O') {
@@ -122,7 +135,11 @@ class Peripherals {
         if(sensorTransmit == true) {
             message << "TEM " << temperature << ";";
             message << "T " << touch_one << " " << touch_two << " " << touch_three << " " << touch_four << ";";
-            message << "EDSP " << endstop_one << " " << endstop_two << " " << endstop_three << " " << endstop_four << ";";
+            message << "EDSP " << endstop_one << " " << endstop_two << " " << endstop_three << " " << endstop_four << ";E";
+            for(int i = 0; i < 3; i++) {
+                message << " " << extraInputs[i];
+            }
+            message << ";";
         }
 
         return message.str();
