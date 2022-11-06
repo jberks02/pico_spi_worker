@@ -69,6 +69,7 @@ int main() {
 
         while (true) {
             if(periphers_state.pause_updates == false) {
+                periphers_state.updates_occurring = true;
                 periphers_state.temperature = adc.getCoreTemperature();
                 periphers_state.touch_one = adc.getInputvalue(0);
                 periphers_state.touch_two = adc.getInputvalue(1);
@@ -83,6 +84,7 @@ int main() {
                 for(int i = 0; i < 3; i++) {
                     periphers_state.extraInputs[i] = newInputValues[i];
                 }
+                periphers_state.updates_occurring = false;
             }
         }
         return 0;
