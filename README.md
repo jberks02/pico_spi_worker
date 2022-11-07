@@ -68,3 +68,15 @@ Numberings from here forward are in reference to physical pins not gpio numbers.
 38. GND
 39. VSYS - power in
 40. VBUS - usb power out
+
+## Component Selection Rationale
+
+There are a few components that had to be picked for this project. While not all of them are optimal or perfect for their roles, there were reasons behind every choice though, for better or for worse. Those reasons are outlined below. 
+
+### L239D
+
+The L293D is a versitile and sturdy IC that offers a wide range of functionality. As well as giving us control of one stepper motor, we can control two brushed dc motors bi-directionally as well. The temperature range is far above necessary parameters, but being able to deal with being in direct sunlight in a variety of climates and conditions is mandatory for the final project. The wide voltage range accepted by it is also favorable for future upgrades to more powerful stepper motors than the current NEMA 17's being used. 
+
+## PCA9685
+
+Along with being plenty durable for the task at hand, the PCA IC is simple in it's operation and provides a range of functionality and options. Offering 16 pwm channels we can operate as many servos as we could conceivably need. The currently used servos operate at 5V, but due to the channels on this chip being purely for the PWM duty cycle, we can run the power for the given servos at any desired level in the circuitry. 
