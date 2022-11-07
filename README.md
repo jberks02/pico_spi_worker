@@ -23,3 +23,48 @@ The theory of Operation is as follows:
 This project is structured into two main folders, structs and modules, along with a main.cpp file that initializes each class described in the module files. "structs" is for classes that act more like json objects storing new data and moving it around the application. currently there are only two of these but as methods change and get updated I'm sure more will be added. 
 
 The "main" file houses the initial startup for each module and also initializes the second core running the read/write layer. Once a new command set is read in the class maintaining the state of device is able to destribute that data to all the appropriate motors and devices. 
+
+## Connection Mapping
+
+Numberings from here forward are in reference to physical pins not gpio numbers. 
+
+1. Serial Data line for I2C - goes to PCA9685 IC. 
+2. Serial Clock line for I2C - goes to PCA9685 IC.
+3. GND
+4. 1A of L239D IC(1)
+5. 2A of L239D IC(1)
+6. 3A of L239D IC(1)
+7. 4A of L239D IC(1)
+8. GND
+9. 1A of L239D IC(2)
+10. 2A of L239D IC(2)
+11. 3A of L239D IC(2)
+12. 4A of L239D IC(2)
+13. GND
+14. Stepper Motor(1) EndStop 1
+15. Stepper Motor(1) EndStop 2
+16. Stepper Motor(2) EndStop 1
+17. Stepper Motor(2) EndStop 2
+18. GND
+19. This is connected to a generic output with uni directional current at 5V
+20. This is connected to a generic output with uni directional current at 5V
+21. SPI interface RX - MOSI
+22. SPI interface CSn - Chip Select line
+23. GND
+24. SPI interface SCK - Serial Clock Line
+25. SPI interface TX - MISO
+26. Generic GPIO input
+27. Generic GPIO input
+28. GND
+29. Generic GPIO input
+30. RUN - not planned for use. 
+31. Analogue to Digital input 0
+32. Analogue to Digital input 1
+33. GND
+34. Analogue to Digital input 2
+35. Analogue to Digital input 3
+36. 3V out - rail connects to all logic power circuits found throughout architecture
+37. 3v3 enable pin - not planned for use. 
+38. GND
+39. VSYS - power in
+40. VBUS - usb power out
