@@ -22,4 +22,4 @@ The theory of Operation is as follows:
 
 This project is structured into two main folders, structs and modules, along with a main.cpp file that initializes each class described in the module files. "structs" is for classes that act more like json objects storing new data and moving it around the application. currently there are only two of these but as methods change and get updated I'm sure more will be added. 
 
-The 
+The "main" file houses the initial startup for each module and also initializes the second core running the read/write layer. Once a new command set is read in the class maintaining the state of device is able to destribute that data to all the appropriate motors and devices. 
