@@ -1,7 +1,7 @@
 /*
  * SPI Worker for Raspberry Pi Pico
  *
- * @version     1.0.0
+ * @version     2.0.0
  * @author     Justin Berkshire
  * @copyright   2022
  * @licence     MIT
