@@ -80,3 +80,6 @@ The L293D is a versitile and sturdy IC that offers a wide range of functionality
 ## PCA9685
 
 Along with being plenty durable for the task at hand, the PCA IC is simple in it's operation and provides a range of functionality and options. Offering 16 pwm channels we can operate as many servos as we could conceivably need. The currently used servos operate at 5V, but due to the channels on this chip being purely for the PWM duty cycle, we can run the power for the given servos at any desired level in the circuitry. 
+
+## Transmission
+
